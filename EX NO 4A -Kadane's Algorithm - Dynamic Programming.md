@@ -1,30 +1,35 @@
 
-# EX 4B Frog Jump - Dynamic Programming.
-## DATE:24/09/25
+# EX 4A Kadane's Algorithm - Dynamic Programming. 
+## DATE:22/09/25
 ## AIM:
-To write a Java program to for given constraints.
-A Frog Jump 1 or 2 steps at a time.
-Problem Statement:
+To Write a Java program to solve the below problem using Kadane's Algorithm.
+A solar company installs solar panels around a circular grid of n buildings. Each building either generates or consumes net energy, represented by integers (+ve for generated, -ve for consumed).
 
-A frog is at the bottom of the stairs with n steps. It can jump either 1 or 2 steps at a time. Write a program to find the number of distinct ways the frog can reach the top (n-th step).
+The company wants to find a contiguous sequence of buildings (possibly wrapping around from the end to the beginning) that maximizes the total net energy.
+
+Write a program to compute the maximum net energy that can be collected from any contiguous block of buildings on the circular grid.
 
 Input Format:
+First line: Integer n (number of buildings)
 
-A single integer n (1 ≤ n ≤ 45) – number of steps.
- Output Format:
+Second line: n space-separated integers: net energy for each building
 
-A single integer – number of distinct ways to reach step n.
+Output Format:
+A single integer: Maximum net energy collectable from a contiguous block (wrapping allowed)
 
+Constraints:
+1 <= n <= 10^6
 ## Algorithm
-1.Start and read the number of steps n.
+1.Start and read the number of solar panels and their energy values into an array.
 
-2.If n <= 1, there is only one way to reach the top.
+2.Calculate the total sum of all energy values.
 
-3.Create a DP array dp[] where dp[i] stores the number of ways to reach step i.
+3.Find the maximum subarray sum (non-circular case) using Kadane’s algorithm.
 
-4.Initialize dp[0] = 1 and dp[1] = 1, then use the relation dp[i] = dp[i-1] + dp[i-2] for i ≥ 2.
+4.Find the minimum subarray sum and compute the circular sum as totalSum - minSum.
 
-5.Output dp[n], which represents the total number of ways the frog can reach the top.
+5.Return the maximum of maxSum and circularSum (handle all-negative case separately).
+   
 
 ## Program:
 ```
@@ -32,25 +37,57 @@ A single integer – number of distinct ways to reach step n.
 Program to implement Reverse a String
 
 */
-import java.util.Scanner;
+import java.util.*;
 
-public class FrogJump {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
-        scanner.close();
-        System.out.println(countWays(n));
+public class SolarEnergyMaximizer {
+
+    public static int maxCircularEnergy(int[] energy)     {
+        //Type your code
+        int sum=0;
+        for(int i: energy){
+            sum+=i;
+        }
+        int maxSum=maxSubArraySum(energy);
+        int minSum=minSubArraySum(energy);
+        int wrappedDifference=sum-minSum;
+        if(maxSum<0) return maxSum;
+        return Math.max(maxSum,wrappedDifference);
+        
+    }
+    
+    public static int maxSubArraySum(int[] energy){
+        int sum=0,maxSum=energy[0];
+        for(int i:energy){
+            sum+=i;
+            if(sum>maxSum){
+                maxSum=sum;
+            }
+            if(sum<0) sum=0;
+        }
+        return maxSum;
+    }
+    
+    public static int minSubArraySum(int[] energy){
+        int sum=0,minSum=energy[0];
+        for(int i:energy){
+            sum+=i;
+            if(sum<minSum) minSum=sum;
+            if(sum>0) sum=0;
+        }
+        return minSum;
     }
 
-    public static int countWays(int n) {
-        if (n <= 1) return 1;
-        int[] dp = new int[n + 1];
-        dp[0] = 1;
-        dp[1] = 1;
-        for (int i = 2; i <= n; i++) {
-            dp[i] = dp[i - 1] + dp[i - 2];
+    
+    
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] energy = new int[n];
+        for (int i = 0; i < n; i++) {
+            energy[i] = sc.nextInt();
         }
-        return dp[n];
+        System.out.println(maxCircularEnergy(energy));
     }
 }
 
@@ -58,8 +95,8 @@ public class FrogJump {
 
 ## Output:
 
-<img width="321" height="182" alt="image" src="https://github.com/user-attachments/assets/ff2462bc-1737-4f29-ba66-c61d96f933b8" />
+<img width="405" height="229" alt="image" src="https://github.com/user-attachments/assets/11ca4a91-fbc6-4f23-8eb3-0dcbe2393599" />
 
 
 ## Result:
-The program successfully implemented and the expected output is verified.
+The program successfully Implemented and the output is verified. 
